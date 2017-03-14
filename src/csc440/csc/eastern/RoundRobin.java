@@ -9,6 +9,9 @@ public class RoundRobin {
 	private int contextSwitch;
 
 	public RoundRobin() {
+		current = null;
+		quantum = 0;
+		contextSwitch = 0;
 
 	}
 
@@ -22,6 +25,12 @@ public class RoundRobin {
 		this.contextSwitch = contextSwitch;
 		this.current = current;
 		this.quantum = quantum;
+	}
+	
+	
+	public Process execute(){
+		current.setRemaindingServTime(current.getRemaindingServTime()-quantum);
+		return current;
 	}
 
 	public Process getCurrent() {

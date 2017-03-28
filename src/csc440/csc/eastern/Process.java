@@ -8,6 +8,13 @@ public class Process {
 	
 	private int remaindingServTime;
 	
+	private int startTime;
+	private int endTime;
+	private int turnaroundTime;
+	
+	private int initialWaitTime;
+	private int totalWaitTime;
+	
 	
 	public Process(){
 		remaindingServTime = serviceTime;
@@ -59,5 +66,70 @@ public class Process {
 		this.remaindingServTime = remaindingServTime;
 	}
 	
+	
 
+	public int getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(int startTime) {
+		this.startTime = startTime;
+	}
+
+	public int getTurnaroundTime() {
+		return turnaroundTime;
+	}
+
+	public void setTurnaroundTime(int turnaroundTime) {
+		this.turnaroundTime = turnaroundTime;
+	}
+
+	public int getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(int endTime) {
+		this.endTime = endTime;
+		
+		turnaroundTime = this.endTime - this.arrivalTime;
+		
+		initialWaitTime = startTime - arrivalTime;
+		
+		totalWaitTime = this.endTime - serviceTime - initialWaitTime;
+		
+		
+	}
+	
+	
+	
+
+	public int getInitialWaitTime() {
+		return initialWaitTime;
+	}
+
+	public void setInitialWaitTime(int initialWaitTime) {
+		this.initialWaitTime = initialWaitTime;
+	}
+
+	public int getTotalWaitTime() {
+		return totalWaitTime;
+	}
+
+	public void setTotalWaitTime(int totalWaitTime) {
+		this.totalWaitTime = totalWaitTime;
+	}
+
+	@Override
+	public String toString() {
+		return "Process \r\tId:" + id + "\r\tServiceTime:" + serviceTime + "\r\tArrival Time:" + arrivalTime
+				+ "\r\tStart Time:" + startTime + "\r\tEnd Time:" + endTime
+				+ "\r\tTurn Around Time:" + turnaroundTime + "\r\tInitial Wait Time:" + initialWaitTime + "\r\tTotal Wait Time:"
+				+ totalWaitTime;
+	}
+
+
+	
+
+	
+	
 }

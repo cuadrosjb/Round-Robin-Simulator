@@ -2,12 +2,12 @@ package csc440.csc.eastern;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.TimeUnit;
+import java.util.Random;
 
 public class ReadyList {
 
 	private Queue<Process> list;
-	
+
 	int currentTime;
 
 	public ReadyList() {
@@ -21,32 +21,53 @@ public class ReadyList {
 	}
 
 	public void run() {
-		try {
-			while (!list.isEmpty()) {
-				
-				if(list.peek().getArrivalTime() <= currentTime){
-				
-					Process p = list.peek();
-					list.remove();
-					if (p.getRemaindingServTime() > 4) {
-						currentTime+=5;
-						TimeUnit.MILLISECONDS.sleep(5);
-						p = new RoundRobin(p, 5).execute();
-						list.add(p);
-					} else {
-						currentTime+=p.getRemaindingServTime();
-						TimeUnit.MILLISECONDS.sleep(p.getRemaindingServTime());
-						p = new RoundRobin(p, 5).execute();
+		
+		int total =0;
+		int turnaround=0;
+		
+		System.out.println("Start time: " + currentTime);
+		while (!list.isEmpty()) {
+
+			if (list.peek().getArrivalTime() <= currentTime) {
+
+				Process p = list.peek();
+				list.remove();
+				System.out.println("Process: " + p.getId() + " current time: " + currentTime); 
+				if (p.getRemaindingServTime() > 4) {
+					
+					if(p.getServiceTime() == p.getRemaindingServTime()){
+						p.setStartTime(currentTime);
 					}
-				}else{
-					Process p = list.peek();
-					list.remove();
-					list.add(p);
+					
+					currentTime += 5;
+					p = new RoundRobin(p, 5).execute();
+					if(p.getRemaindingServTime() ==0){
+						p.setEndTime(currentTime);
+						System.out.println(p.toString());
+						total++;
+						turnaround += p.getTurnaroundTime();
+					}else{
+						list.add(p);
+					}
+					
+				} else {
+					currentTime += p.getRemaindingServTime();
+					p = new RoundRobin(p, 5).execute();
+					p.setEndTime(currentTime);
+					System.out.println(p.toString());
+					total++;
+					turnaround += p.getTurnaroundTime();
+					
 				}
+			} else {
+				Process p = list.peek();
+				list.remove();
+				list.add(p);
 			}
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
 		}
+		System.out.println("End time: " + currentTime);
+		
+		System.out.println("The total average turnaround time is: " + turnaround/total);
 	}
 
 	public Queue<Process> getList() {
@@ -55,6 +76,17 @@ public class ReadyList {
 
 	public void setList(Queue<Process> list) {
 		this.list = list;
+	}
+
+	public int generateServiceTime() {
+		Random rand = new Random();
+
+		if (rand.nextBoolean()) {
+			return 5;
+		} else {
+			return 2;
+		}
+
 	}
 
 }

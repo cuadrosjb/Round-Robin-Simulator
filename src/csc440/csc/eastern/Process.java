@@ -20,6 +20,10 @@ public class Process {
 		remaindingServTime = serviceTime;
 	}
 	
+	public Process(String id){
+		this.id = id;
+	}
+	
 	public Process(int serviceTime, int  arrivalTime){
 		this.serviceTime = serviceTime;
 		this.remaindingServTime = serviceTime;

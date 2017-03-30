@@ -33,14 +33,14 @@ public class ReadyList {
 				Process p = list.peek();
 				list.remove();
 //				System.out.println("Process: " + p.getId() + " current time: " + currentTime);
-				if (p.getRemaindingServTime() > 2) {
+				if (p.getRemaindingServTime() > 1) {
 
 					if (p.getServiceTime() == p.getRemaindingServTime()) {
 						p.setStartTime(currentTime);
 					}
 
-					currentTime += 3;
-					p = new RoundRobin(p, 3).execute();
+					currentTime += 1;
+					p = new RoundRobin(p, 1).execute();
 					if (p.getRemaindingServTime() == 0) {
 						p.setEndTime(currentTime);
 						System.out.println(p.toString());
@@ -52,7 +52,7 @@ public class ReadyList {
 
 				} else {
 					currentTime += p.getRemaindingServTime();
-					p = new RoundRobin(p, 3).execute();
+					p = new RoundRobin(p, 1).execute();
 					p.setEndTime(currentTime);
 					System.out.println(p.toString());
 					total++;
@@ -63,6 +63,7 @@ public class ReadyList {
 				Process p = list.peek();
 				list.remove();
 				list.add(p);
+				currentTime++;
 			}
 		}
 		System.out.println("End time: " + currentTime);
@@ -155,12 +156,12 @@ public class ReadyList {
 			}
 		}
 		
-//		currentTime =0 ;
+		currentTime =0 ;
 		
-//		for(Process p : list){
-//			System.out.println("id: " + p.getId() + " ,arrival time: " + p.getArrivalTime() + " ,service time: " + p.getServiceTime());
-//			
-//		}
+		for(Process p : list){
+			System.out.println("id: " + p.getId() + " ,arrival time: " + p.getArrivalTime() + " ,service time: " + p.getServiceTime());
+			
+		}
 		
 		runG();
 		

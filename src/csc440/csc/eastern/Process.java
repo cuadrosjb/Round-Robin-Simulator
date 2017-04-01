@@ -1,42 +1,48 @@
 package csc440.csc.eastern;
 
+/**
+ * 
+ * Process class which contains all the attributes and functions to analyze the
+ * performance of the round robin
+ * 
+ */
 public class Process {
-	
+
 	private String id;
 	private int serviceTime;
 	private int arrivalTime;
-	
+
 	private int remaindingServTime;
-	
+
 	private int startTime;
 	private int endTime;
 	private int turnaroundTime;
-	
+
 	private int initialWaitTime;
 	private int totalWaitTime;
-	
-	
-	public Process(){
+
+	public boolean print = false;
+
+	public Process() {
 		remaindingServTime = serviceTime;
 	}
-	
-	public Process(String id){
+
+	public Process(String id) {
 		this.id = id;
 	}
-	
-	public Process(int serviceTime, int  arrivalTime){
-		this.serviceTime = serviceTime;
-		this.remaindingServTime = serviceTime;
-		this.arrivalTime = arrivalTime;
-	}
-	
-	public Process(String id, int serviceTime, int  arrivalTime){
-		this.id = id;
+
+	public Process(int serviceTime, int arrivalTime) {
 		this.serviceTime = serviceTime;
 		this.remaindingServTime = serviceTime;
 		this.arrivalTime = arrivalTime;
 	}
 
+	public Process(String id, int serviceTime, int arrivalTime) {
+		this.id = id;
+		this.serviceTime = serviceTime;
+		this.remaindingServTime = serviceTime;
+		this.arrivalTime = arrivalTime;
+	}
 
 	public String getId() {
 		return id;
@@ -69,8 +75,6 @@ public class Process {
 	public void setRemaindingServTime(int remaindingServTime) {
 		this.remaindingServTime = remaindingServTime;
 	}
-	
-	
 
 	public int getStartTime() {
 		return startTime;
@@ -94,18 +98,10 @@ public class Process {
 
 	public void setEndTime(int endTime) {
 		this.endTime = endTime;
-		
 		turnaroundTime = this.endTime - this.arrivalTime;
-		
 		initialWaitTime = startTime - arrivalTime;
-		
 		totalWaitTime = this.endTime - serviceTime - initialWaitTime;
-		
-		
 	}
-	
-	
-	
 
 	public int getInitialWaitTime() {
 		return initialWaitTime;
@@ -125,15 +121,16 @@ public class Process {
 
 	@Override
 	public String toString() {
-		return "Process \r\tId:" + id + "\r\tServiceTime:" + serviceTime + "\r\tArrival Time:" + arrivalTime
-				+ "\r\tStart Time:" + startTime + "\r\tEnd Time:" + endTime
-				+ "\r\tTurn Around Time:" + turnaroundTime + "\r\tInitial Wait Time:" + initialWaitTime + "\r\tTotal Wait Time:"
-				+ totalWaitTime;
+
+		if (!print) {
+			print = true;
+			return "Process \r\tId:" + id + "\r\tServiceTime:" + serviceTime + "\r\tArrival Time:" + arrivalTime
+					+ "\r\tStart Time:" + startTime + "\r\tEnd Time:" + endTime + "\r\tTurn Around Time:"
+					+ turnaroundTime + "\r\tInitial Wait Time:" + initialWaitTime + "\r\tTotal Wait Time:"
+					+ totalWaitTime;
+		} else {
+			return "";
+		}
 	}
 
-
-	
-
-	
-	
 }

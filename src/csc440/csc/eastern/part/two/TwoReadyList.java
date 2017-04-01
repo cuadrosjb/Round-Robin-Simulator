@@ -12,6 +12,7 @@ public class TwoReadyList {
 	private TwoRoundRobin trr;
 
 	int quantum;
+	String stopAtProcess;
 
 	int currentTime;
 
@@ -28,6 +29,16 @@ public class TwoReadyList {
 		readyList = new LinkedList<Process>();
 		currentTime = 0;
 		this.quantum = quantum;
+		stopAtProcess = "P5";
+	}
+
+	public TwoReadyList(int quantum, String stopAtProcess) {
+		list = new LinkedList<Process>();
+		trr = new TwoRoundRobin();
+		readyList = new LinkedList<Process>();
+		currentTime = 0;
+		this.quantum = quantum;
+		this.stopAtProcess = stopAtProcess;
 	}
 
 	public TwoReadyList(Queue<Process> list) {
@@ -35,22 +46,28 @@ public class TwoReadyList {
 		currentTime = 0;
 	}
 
+	/**
+	 * Check if the process has arrived
+	 */
 	public void someoneArrived() {
 		for (Process p : list) {
 			if (p.getArrivalTime() == currentTime) {
-				System.out.println("adding " + p.getId() + " to the queue");
-				for(Process inQueue : readyList){
-					if(inQueue.getId().equals(p.getId())){
+				for (Process inQueue : readyList) {
+					if (inQueue.getId().equals(p.getId())) {
 						return;
 					}
 				}
 				readyList.add(p);
-
-				return;
 			}
 		}
 	}
 
+	/**
+	 * Function which helps keeping track for all the variables
+	 * Add current time, class the function someoneArrived(), and 
+	 * subtracts the turn around to the service time
+	 * 
+	 */
 	public void run() {
 
 		int total = 0;
@@ -59,18 +76,10 @@ public class TwoReadyList {
 		System.out.println("Start time: " + currentTime);
 
 		while (true) {
-			System.out.println("current time: " + currentTime);
 			someoneArrived();
 
 			if (!readyList.isEmpty()) {
 				Process p = readyList.poll();
-				
-//				System.out.println("----------all current processes-------");
-//				for(Process m : readyList){
-//					System.out.println(m.toString());
-//				}
-//				System.out.println("----------all current processes-------");
-				
 
 				if (p.getServiceTime() == p.getRemaindingServTime()) {
 					p.setStartTime(currentTime);
@@ -79,53 +88,55 @@ public class TwoReadyList {
 				for (int i = 0; i < quantum; i++) {
 
 					if (p.getRemaindingServTime() != 0) {
-						System.out.println("servicing: " + p.getId());
 						p.setRemaindingServTime(p.getRemaindingServTime() - 1);
 						currentTime++;
 						someoneArrived();
 					} else {
-
-						// System.out.println("Process " + p.getId() + "
-						// ended");
 						p.setEndTime(currentTime);
-						System.out.println(p.toString());
+						if (p.getId().equals("P0") || p.getId().equals("P1") || p.getId().equals("P2")
+								|| p.getId().equals("P3") || p.getId().equals("P4") || p.getId().equals("P5")
+								|| p.getId().equals("P6") || p.getId().equals("P7") || p.getId().equals("P8")
+								|| p.getId().equals("P9") || p.getId().equals("P790") || p.getId().equals("P791")
+								|| p.getId().equals("P792") || p.getId().equals("P793") || p.getId().equals("P794")
+								|| p.getId().equals("P795") || p.getId().equals("P796") || p.getId().equals("P797")
+								|| p.getId().equals("P798") || p.getId().equals("P799"))
+							System.out.println(p.toString());
 						turnaround += p.getTurnaroundTime();
 						i = 5000;
 					}
 
 				}
-				
-				System.out.println("p.getRemaindingServTime(): "+p.getRemaindingServTime());
 
 				if (p.getRemaindingServTime() > 0) {
-					System.out.println("adding " + p.getId() + " back to the queue");
 					readyList.add(p);
 
-				}else{
+				} else {
 					p.setEndTime(currentTime);
-					System.out.println(p.toString());
+					turnaround += p.getTurnaroundTime();
+
+					if (p.getId().equals("P0") || p.getId().equals("P1") || p.getId().equals("P2")
+							|| p.getId().equals("P3") || p.getId().equals("P4") || p.getId().equals("P5")
+							|| p.getId().equals("P6") || p.getId().equals("P7") || p.getId().equals("P8")
+							|| p.getId().equals("P9") || p.getId().equals("P790") || p.getId().equals("P791")
+							|| p.getId().equals("P792") || p.getId().equals("P793") || p.getId().equals("P794")
+							|| p.getId().equals("P795") || p.getId().equals("P796") || p.getId().equals("P797")
+							|| p.getId().equals("P798") || p.getId().equals("P799"))
+						System.out.println(p.toString());
 				}
-//				Process dead = readyList.poll();
-//				System.out.println("removing process: " + dead.getid);
-				
-				if (p.getId().equals("P5")) {
+				if (p.getId().equals(stopAtProcess)) {
 					if (p.getRemaindingServTime() == 0) {
 						System.out.println("End time: " + currentTime);
-
-						System.out.println("The total average turnaround time is: " + turnaround / total);
+						total = 800;
+						System.out.println("The total average turnaround time is: " + ((double) turnaround / total));
 						return;
 					}
 				}
 
 			} else {
-				System.out.println("idling for one second");
 				currentTime++;
 				someoneArrived();
-
 			}
-
 		}
-
 	}
 
 	public Queue<Process> getList() {
@@ -137,7 +148,6 @@ public class TwoReadyList {
 	}
 
 	public int generateServiceTime() {
-
 		return new Random().nextInt(4) + 2;
 
 	}
@@ -146,6 +156,9 @@ public class TwoReadyList {
 		return new Random().nextInt(5) + 4;
 	}
 
+	// Sets the random generate list of processes and assigns the random arrival
+	// and random service time
+	// once finished we call the run functions to simulate the round robin
 	public void setupList() {
 
 		int prevValue = 0;
@@ -163,14 +176,40 @@ public class TwoReadyList {
 			}
 		}
 
-		for (Process p : list) {
-			System.out.println("id: " + p.getId() + " ,arrival time: " + p.getArrivalTime() + " ,service time: "
-					+ p.getServiceTime() + " getRemainder: " + p.getRemaindingServTime());
-
-		}
-
 		run();
 
+	}
+
+	public Queue<Process> getReadyList() {
+		return readyList;
+	}
+
+	public void setReadyList(Queue<Process> readyList) {
+		this.readyList = readyList;
+	}
+
+	public TwoRoundRobin getTrr() {
+		return trr;
+	}
+
+	public void setTrr(TwoRoundRobin trr) {
+		this.trr = trr;
+	}
+
+	public int getQuantum() {
+		return quantum;
+	}
+
+	public void setQuantum(int quantum) {
+		this.quantum = quantum;
+	}
+
+	public int getCurrentTime() {
+		return currentTime;
+	}
+
+	public void setCurrentTime(int currentTime) {
+		this.currentTime = currentTime;
 	}
 
 }
